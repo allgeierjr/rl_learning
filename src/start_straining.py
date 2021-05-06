@@ -16,16 +16,14 @@ if __name__ == '__main__':
     rospy.init_node('example_turtlebot2_maze_qlearn',
                     anonymous=True, log_level=rospy.WARN)
 
-    # Init OpenAI_ROS ENV
     task_and_robot_environment_name = rospy.get_param(
         '/turtlebot2/task_and_robot_environment_name')
     env = StartOpenAI_ROS_Environment(
         task_and_robot_environment_name)
-    # Create the Gym environment
+
     rospy.loginfo("Gym environment done")
     rospy.loginfo("Starting Learning")
 
-    # Set the logging system
     rospack = rospkg.RosPack()
     pkg_path = rospack.get_path('turtle2_openai_ros_example')
     outdir = pkg_path + '/training_results'
@@ -34,9 +32,6 @@ if __name__ == '__main__':
 
     last_time_steps = numpy.ndarray(0)
 
-    # Loads parameters from the ROS param server
-    # Parameters are stored in a yaml file inside the config directory
-    # They are loaded at runtime by the launch file
     Alpha = rospy.get_param("/turtlebot2/alpha")
     Epsilon = rospy.get_param("/turtlebot2/epsilon")
     Gamma = rospy.get_param("/turtlebot2/gamma")
@@ -46,7 +41,6 @@ if __name__ == '__main__':
 
     running_step = rospy.get_param("/turtlebot2/running_step")
 
-    # Initialises the algorithm that we are going to use for learning
     qlearn = sarsa.Sarsa(actions=range(env.action_space.n),
                            alpha=Alpha, gamma=Gamma, epsilon=Epsilon)
     initial_epsilon = qlearn.epsilon
@@ -54,7 +48,7 @@ if __name__ == '__main__':
     start_time = time.time()
     highest_reward = 0
 
-    # Starts the main training loop: the one about the episodes to do
+    # Starts the main training loop:
     for x in range(nepisodes):
         print(x)
         rospy.logdebug("############### WALL START EPISODE=>" + str(x))
